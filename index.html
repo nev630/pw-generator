@@ -14,8 +14,9 @@
     }
   </style>
 </head>
-<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
-  <main class="w-full max-w-2xl bg-neutral-950 border border-neutral-800 rounded-2xl shadow-2xl p-5 sm:p-8 space-y-6">
+<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 overflow-x-hidden">
+  <canvas id="bgCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+  <main class="relative z-10 w-full max-w-2xl bg-neutral-950/90 backdrop-blur-sm border border-neutral-800 rounded-2xl shadow-2xl p-5 sm:p-8 space-y-6">
     <!-- Header -->
     <header class="border-b border-neutral-800 pb-4">
       <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">패스프레이즈 비밀번호 생성기</h1>
@@ -26,16 +27,14 @@
 
     <!-- Generated Passphrase Display -->
     <section class="space-y-3">
-      <div id="koReadingBox" class="bg-black border border-neutral-800 rounded-xl p-4 space-y-1.5">
-        <div class="text-xs text-neutral-400">기억용 한국어 패스프레이즈</div>
+      <div id="koReadingBox" class="bg-black border border-neutral-800 rounded-xl p-4">
         <div id="koPhraseOutput" class="text-base sm:text-lg font-semibold text-neutral-200 break-words leading-relaxed">
           생성 중...
         </div>
       </div>
 
       <div class="relative bg-black border border-neutral-800 rounded-xl p-4 sm:p-5">
-        <div class="flex items-center justify-between text-xs text-neutral-400 mb-2">
-          <span id="outputTitleLabel">실제 입력용 비밀번호 (두벌식 영타 변환)</span>
+        <div class="flex items-center justify-end text-xs text-neutral-400 mb-1">
           <span id="charLengthLabel" class="mono text-neutral-400">0자</span>
         </div>
         <div id="passphraseOutput" class="mono text-lg sm:text-xl font-semibold text-white break-all leading-relaxed select-all min-h-[2rem]">
@@ -244,6 +243,70 @@
     });
 
     generateAll();
+
+    // Monochrome moving program code background
+    (function initCodeBackground() {
+      const canvas = document.getElementById("bgCanvas");
+      const ctx = canvas.getContext("2d");
+      const codeTokens = [
+        "const", "let", "return", "async", "crypto", "entropy", "hash",
+        "0x7F", "0xA9", "0x00", "=>", "{}", "[]", "&&", "||", "===",
+        "uint32", "keygen", "salt", "utf8", "bit", "xor", "rand()",
+        "0", "1", "A", "F", "X", ";", "::", "/*"
+      ];
+
+      let width = 0;
+      let height = 0;
+      let columns = 0;
+      let drops = [];
+      let animId = null;
+      const fontSize = 14;
+      const colWidth = 34;
+
+      function setup() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        columns = Math.max(1, Math.floor(width / colWidth));
+        drops = Array.from({ length: columns }, () => Math.floor(Math.random() * (height / fontSize)));
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      let lastTime = 0;
+      function draw(now) {
+        animId = window.requestAnimationFrame(draw);
+        if (now - lastTime < 55) return;
+        lastTime = now;
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
+        ctx.fillRect(0, 0, width, height);
+        ctx.font = fontSize + "px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const token = codeTokens[Math.floor(Math.random() * codeTokens.length)];
+          const x = i * colWidth;
+          const y = drops[i] * fontSize;
+          const alpha = (Math.random() * 0.35 + 0.12).toFixed(2);
+          ctx.fillStyle = "rgba(255, 255, 255, " + alpha + ")";
+          ctx.fillText(token, x, y);
+
+          if (y > height && Math.random() > 0.96) {
+            drops[i] = 0;
+          } else {
+            drops[i]++;
+          }
+        }
+      }
+
+      window.addEventListener("resize", setup);
+      window.addEventListener("load", () => {
+        setup();
+        if (animId) window.cancelAnimationFrame(animId);
+        animId = window.requestAnimationFrame(draw);
+      });
+      setup();
+      animId = window.requestAnimationFrame(draw);
+    })();
   </script>
 </body>
 </html>
