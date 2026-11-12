@@ -60,30 +60,6 @@
       </div>
     </section>
 
-    <!-- Individual Word Chips -->
-    <section class="space-y-2">
-      <div class="flex items-center justify-between text-xs text-neutral-400">
-        <span>선택된 단어 (클릭하면 해당 단어만 다시 뽑습니다)</span>
-      </div>
-      <div id="wordChips" class="flex flex-wrap gap-2"></div>
-    </section>
-
-    <!-- Security Metrics -->
-    <section class="grid grid-cols-3 gap-3 bg-black border border-neutral-800 rounded-xl p-4">
-      <div>
-        <div class="text-xs text-neutral-400">보안 강도 (엔트로피)</div>
-        <div id="entropyValue" class="text-base sm:text-lg font-bold text-white mt-0.5">- bits</div>
-      </div>
-      <div>
-        <div class="text-xs text-neutral-400">가능한 조합 수</div>
-        <div id="comboValue" class="text-base sm:text-lg font-bold text-white mt-0.5">-</div>
-      </div>
-      <div>
-        <div class="text-xs text-neutral-400">안전 등급</div>
-        <div id="strengthBadge" class="text-base sm:text-lg font-bold text-white mt-0.5">매우 강력</div>
-      </div>
-    </section>
-
     <!-- Options -->
     <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
       <div class="space-y-2">
@@ -197,29 +173,9 @@
       return res;
     }
 
-    function calculateEntropy() {
-      const list = KO_WORDLIST;
-      const baseBits = state.wordCount * Math.log2(list.length);
-      const suffixBits = state.addSuffix ? Math.log2(90 * SYMBOLS.length) : 0;
-      return baseBits + suffixBits;
-    }
-
-    function formatCombinations(bits) {
-      const exp = bits * Math.LOG10E;
-      const exponent = Math.floor(exp);
-      const mantissa = Math.pow(10, exp - exponent).toFixed(1);
-      return mantissa + " × 10^" + exponent;
-    }
-
     function generateAll() {
       state.words = Array.from({ length: state.wordCount }, () => pickRandomWord());
       state.suffix = generateSuffix();
-
-      render();
-    }
-
-    function rerollWord(idx) {
-      state.words[idx] = pickRandomWord();
 
       render();
     }
@@ -268,34 +224,6 @@
       const pw = buildPasswordOutput();
       document.getElementById("passphraseOutput").textContent = pw;
       document.getElementById("charLengthLabel").textContent = pw.length + "자";
-
-      const bits = calculateEntropy();
-      document.getElementById("entropyValue").textContent = bits.toFixed(1) + " bits";
-      document.getElementById("comboValue").textContent = formatCombinations(bits);
-
-      const badge = document.getElementById("strengthBadge");
-      if (bits >= 80) {
-        badge.textContent = "매우 강력";
-        badge.className = "text-base sm:text-lg font-bold text-white mt-0.5";
-      } else if (bits >= 65) {
-        badge.textContent = "강력";
-        badge.className = "text-base sm:text-lg font-bold text-neutral-200 mt-0.5";
-      } else {
-        badge.textContent = "보통";
-        badge.className = "text-base sm:text-lg font-bold text-neutral-400 mt-0.5";
-      }
-
-      const chipsEl = document.getElementById("wordChips");
-      chipsEl.innerHTML = "";
-      state.words.forEach((w, idx) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "mono text-xs sm:text-sm px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 transition flex items-center gap-1.5 cursor-pointer";
-        btn.title = "클릭하여 이 단어만 다시 뽑기";
-        btn.textContent = (idx + 1) + ". " + w + " (" + hangulToQwerty(w) + ")";
-        btn.addEventListener("click", () => rerollWord(idx));
-        chipsEl.appendChild(btn);
-      });
 
 
     }
