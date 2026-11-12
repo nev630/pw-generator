@@ -12,6 +12,27 @@
     .mono {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     }
+    @keyframes fadeWipeRight {
+      0% {
+        opacity: 0.15;
+        -webkit-mask-position: 100% 0;
+        mask-position: 100% 0;
+      }
+      100% {
+        opacity: 1;
+        -webkit-mask-position: 0% 0;
+        mask-position: 0% 0;
+      }
+    }
+    .fade-wipe-right {
+      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 45%, transparent 65%, transparent 100%);
+      mask-image: linear-gradient(to right, #000 0%, #000 45%, transparent 65%, transparent 100%);
+      -webkit-mask-size: 260% 100%;
+      mask-size: 260% 100%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      animation: fadeWipeRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
   </style>
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 overflow-x-hidden">
@@ -62,7 +83,7 @@
     <!-- Options -->
     <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
       <div class="space-y-2">
-        <label for="wordCountSelect" class="block text-xs font-medium text-neutral-300">단어 개수 (기본 3단어)</label>
+        <label for="wordCountSelect" class="block text-xs font-medium text-neutral-300">단어 개수</label>
         <select id="wordCountSelect" class="w-full bg-black border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white">
           <option value="3" selected>3단어 (기본)</option>
           <option value="4">4단어</option>
@@ -217,14 +238,20 @@
       }, 2000);
     }
 
-    function render() {
-      document.getElementById("koPhraseOutput").textContent = buildKoreanDisplayPhrase();
+    function playFadeWipe(el, text) {
+      el.classList.remove("fade-wipe-right");
+      el.textContent = text;
+      void el.offsetWidth;
+      el.classList.add("fade-wipe-right");
+    }
 
+    function render() {
+      const koText = buildKoreanDisplayPhrase();
       const pw = buildPasswordOutput();
-      document.getElementById("passphraseOutput").textContent = pw;
       document.getElementById("charLengthLabel").textContent = pw.length + "자";
 
-
+      playFadeWipe(document.getElementById("koPhraseOutput"), koText);
+      playFadeWipe(document.getElementById("passphraseOutput"), pw);
     }
 
     document.getElementById("generateBtn").addEventListener("click", generateAll);
