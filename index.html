@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>패스프레이즈 비밀번호 생성기 (한국어 영타 · 영어 지원)</title>
+  <title>패스프레이즈 비밀번호 생성기</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <style>
     body {
@@ -14,60 +14,54 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
-  <main class="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 sm:p-8 space-y-6">
+<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
+  <main class="w-full max-w-2xl bg-neutral-950 border border-neutral-800 rounded-2xl shadow-2xl p-5 sm:p-8 space-y-6">
     <!-- Header -->
-    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-4">
-      <div>
-        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">패스프레이즈 비밀번호 생성기</h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">
-          암호학적 난수(<code class="text-emerald-400">crypto.getRandomValues</code>)로 100% 브라우저 내에서만 생성됩니다.
-        </p>
-      </div>
-      <div class="inline-flex items-center gap-1.5 self-start sm:self-auto px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-medium">
-        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span id="dictCountBadge"></span>
-      </div>
+    <header class="border-b border-neutral-800 pb-4">
+      <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">패스프레이즈 비밀번호 생성기</h1>
+      <p class="text-xs sm:text-sm text-neutral-400 mt-1">
+        암호학적 난수(<code class="text-white">crypto.getRandomValues</code>)로 100% 브라우저 내에서만 생성됩니다.
+      </p>
     </header>
 
     <!-- Language Mode Tabs -->
-    <section class="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-      <button id="modeKoBtn" type="button" class="py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer bg-emerald-500 text-slate-950">
+    <section class="grid grid-cols-2 gap-2 bg-black p-1.5 rounded-xl border border-neutral-800">
+      <button id="modeKoBtn" type="button" class="py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer bg-white text-black">
         한국어 단어 + 두벌식 영타
       </button>
-      <button id="modeEnBtn" type="button" class="py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer text-slate-300 hover:text-white">
-        영어 단어 (31,515개)
+      <button id="modeEnBtn" type="button" class="py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer text-neutral-300 hover:text-white">
+        영어 단어
       </button>
     </section>
 
     <!-- Generated Passphrase Display -->
     <section class="space-y-3">
-      <div id="koReadingBox" class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 space-y-1.5">
-        <div class="text-xs text-slate-400">기억용 한국어 패스프레이즈</div>
-        <div id="koPhraseOutput" class="text-base sm:text-lg font-semibold text-sky-300 break-words leading-relaxed">
+      <div id="koReadingBox" class="bg-black border border-neutral-800 rounded-xl p-4 space-y-1.5">
+        <div class="text-xs text-neutral-400">기억용 한국어 패스프레이즈</div>
+        <div id="koPhraseOutput" class="text-base sm:text-lg font-semibold text-neutral-200 break-words leading-relaxed">
           생성 중...
         </div>
       </div>
 
-      <div class="relative bg-slate-950 border border-slate-800 rounded-xl p-4 sm:p-5">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+      <div class="relative bg-black border border-neutral-800 rounded-xl p-4 sm:p-5">
+        <div class="flex items-center justify-between text-xs text-neutral-400 mb-2">
           <span id="outputTitleLabel">실제 입력용 비밀번호 (두벌식 영타 변환)</span>
-          <span id="charLengthLabel" class="mono text-slate-400">0자</span>
+          <span id="charLengthLabel" class="mono text-neutral-400">0자</span>
         </div>
-        <div id="passphraseOutput" class="mono text-lg sm:text-xl font-semibold text-emerald-300 break-all leading-relaxed select-all min-h-[2rem]">
+        <div id="passphraseOutput" class="mono text-lg sm:text-xl font-semibold text-white break-all leading-relaxed select-all min-h-[2rem]">
           생성 중...
         </div>
       </div>
 
       <!-- Primary Actions -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <button id="generateBtn" type="button" class="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-semibold text-sm sm:text-base transition flex items-center justify-center gap-2 cursor-pointer">
+        <button id="generateBtn" type="button" class="w-full py-3 px-4 rounded-xl bg-white hover:bg-neutral-200 active:bg-neutral-300 text-black font-semibold text-sm sm:text-base transition flex items-center justify-center gap-2 cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           새 패스프레이즈 생성
         </button>
-        <button id="copyBtn" type="button" class="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-100 font-semibold text-sm sm:text-base border border-slate-700 transition flex items-center justify-center gap-2 cursor-pointer">
+        <button id="copyBtn" type="button" class="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 active:bg-neutral-700 text-white font-semibold text-sm sm:text-base border border-neutral-700 transition flex items-center justify-center gap-2 cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
@@ -78,33 +72,33 @@
 
     <!-- Individual Word Chips -->
     <section class="space-y-2">
-      <div class="flex items-center justify-between text-xs text-slate-400">
+      <div class="flex items-center justify-between text-xs text-neutral-400">
         <span>선택된 단어 (클릭하면 해당 단어만 다시 뽑습니다)</span>
       </div>
       <div id="wordChips" class="flex flex-wrap gap-2"></div>
     </section>
 
     <!-- Security Metrics -->
-    <section class="grid grid-cols-3 gap-3 bg-slate-950/70 border border-slate-800 rounded-xl p-4">
+    <section class="grid grid-cols-3 gap-3 bg-black border border-neutral-800 rounded-xl p-4">
       <div>
-        <div class="text-xs text-slate-400">보안 강도 (엔트로피)</div>
+        <div class="text-xs text-neutral-400">보안 강도 (엔트로피)</div>
         <div id="entropyValue" class="text-base sm:text-lg font-bold text-white mt-0.5">- bits</div>
       </div>
       <div>
-        <div class="text-xs text-slate-400">가능한 조합 수</div>
+        <div class="text-xs text-neutral-400">가능한 조합 수</div>
         <div id="comboValue" class="text-base sm:text-lg font-bold text-white mt-0.5">-</div>
       </div>
       <div>
-        <div class="text-xs text-slate-400">안전 등급</div>
-        <div id="strengthBadge" class="text-base sm:text-lg font-bold text-emerald-400 mt-0.5">매우 강력</div>
+        <div class="text-xs text-neutral-400">안전 등급</div>
+        <div id="strengthBadge" class="text-base sm:text-lg font-bold text-white mt-0.5">매우 강력</div>
       </div>
     </section>
 
     <!-- Options -->
     <section class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
       <div class="space-y-2">
-        <label for="wordCountSelect" class="block text-xs font-medium text-slate-300">단어 개수 (기본 6단어)</label>
-        <select id="wordCountSelect" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+        <label for="wordCountSelect" class="block text-xs font-medium text-neutral-300">단어 개수 (기본 6단어)</label>
+        <select id="wordCountSelect" class="w-full bg-black border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white">
           <option value="4">4단어</option>
           <option value="5">5단어</option>
           <option value="6" selected>6단어 (권장)</option>
@@ -114,8 +108,8 @@
       </div>
 
       <div class="space-y-2">
-        <label for="separatorSelect" class="block text-xs font-medium text-slate-300">단어 구분 기호</label>
-        <select id="separatorSelect" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+        <label for="separatorSelect" class="block text-xs font-medium text-neutral-300">단어 구분 기호</label>
+        <select id="separatorSelect" class="w-full bg-black border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white">
           <option value="-" selected>하이픈 (-)</option>
           <option value="_">언더바 (_)</option>
           <option value=".">마침표 (.)</option>
@@ -124,29 +118,22 @@
         </select>
       </div>
 
-      <label id="capitalizeLabel" class="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 cursor-pointer">
-        <span class="text-sm text-slate-200">첫 글자 대문자 <span id="capitalizeHint" class="text-xs text-slate-400">(영어 전용)</span></span>
-        <input id="capitalizeToggle" type="checkbox" checked class="w-4 h-4 accent-emerald-500 cursor-pointer" />
+      <label id="capitalizeLabel" class="flex items-center justify-between bg-black border border-neutral-800 rounded-lg px-3.5 py-2.5 cursor-pointer">
+        <span class="text-sm text-neutral-200">첫 글자 대문자 <span id="capitalizeHint" class="text-xs text-neutral-400">(영어 전용)</span></span>
+        <input id="capitalizeToggle" type="checkbox" checked class="w-4 h-4 accent-white cursor-pointer" />
       </label>
 
-      <label class="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 cursor-pointer">
-        <span class="text-sm text-slate-200">끝에 무작위 숫자·기호 추가</span>
-        <input id="suffixToggle" type="checkbox" checked class="w-4 h-4 accent-emerald-500 cursor-pointer" />
+      <label class="flex items-center justify-between bg-black border border-neutral-800 rounded-lg px-3.5 py-2.5 cursor-pointer">
+        <span class="text-sm text-neutral-200">끝에 무작위 숫자·기호 추가</span>
+        <input id="suffixToggle" type="checkbox" checked class="w-4 h-4 accent-white cursor-pointer" />
       </label>
     </section>
 
-    <!-- Recent History (In-Memory) -->
-    <section class="border-t border-slate-800 pt-4 space-y-2">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xs font-medium text-slate-400">최근 생성 기록 (현재 창 닫으면 자동 삭제 · 클릭 시 복사)</h2>
-        <button id="clearHistoryBtn" type="button" class="text-xs text-slate-400 hover:text-slate-200 transition cursor-pointer">기록 지우기</button>
-      </div>
-      <div id="historyList" class="space-y-1.5 text-xs text-slate-400"></div>
-    </section>
+
   </main>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-emerald-500 text-slate-950 font-semibold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-200">
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-white text-black font-semibold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-200">
     클립보드에 복사되었습니다!
   </div>
 
@@ -187,7 +174,6 @@
       separator: "-",
       capitalize: true,
       addSuffix: true,
-      history: []
     };
 
     function getActiveWordlist() {
@@ -254,39 +240,17 @@
       return mantissa + " × 10^" + exponent;
     }
 
-    function pushHistory(pw, koLabel) {
-      state.history.unshift({ pw, koLabel });
-      if (state.history.length > 5) state.history.pop();
-    }
-
     function generateAll() {
       state.words = Array.from({ length: state.wordCount }, () => pickRandomWord());
       state.suffix = generateSuffix();
-      const pw = buildPasswordOutput();
-      const koLabel = state.mode === "ko" ? buildKoreanDisplayPhrase() : "";
-      pushHistory(pw, koLabel);
+
       render();
     }
 
     function rerollWord(idx) {
       state.words[idx] = pickRandomWord();
-      const pw = buildPasswordOutput();
-      const koLabel = state.mode === "ko" ? buildKoreanDisplayPhrase() : "";
-      if (state.history.length > 0) {
-        state.history[0] = { pw, koLabel };
-      } else {
-        pushHistory(pw, koLabel);
-      }
-      render();
-    }
 
-    function updateCurrentHistoryTop() {
-      if (state.history.length > 0) {
-        state.history[0] = {
-          pw: buildPasswordOutput(),
-          koLabel: state.mode === "ko" ? buildKoreanDisplayPhrase() : ""
-        };
-      }
+      render();
     }
 
     function copyText(text) {
@@ -328,22 +292,18 @@
     }
 
     function render() {
-      const activeList = getActiveWordlist();
       const isKo = state.mode === "ko";
 
       // Mode buttons
       const modeKoBtn = document.getElementById("modeKoBtn");
       const modeEnBtn = document.getElementById("modeEnBtn");
       if (isKo) {
-        modeKoBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer bg-emerald-500 text-slate-950";
-        modeEnBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer text-slate-300 hover:text-white";
+        modeKoBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer bg-white text-black";
+        modeEnBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer text-neutral-300 hover:text-white";
       } else {
-        modeEnBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer bg-emerald-500 text-slate-950";
-        modeKoBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer text-slate-300 hover:text-white";
+        modeEnBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer bg-white text-black";
+        modeKoBtn.className = "py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer text-neutral-300 hover:text-white";
       }
-
-      document.getElementById("dictCountBadge").textContent =
-        activeList.length.toLocaleString("ko-KR") + (isKo ? "개 한국어 내장" : "개 영단어 내장");
 
       // Show/hide Korean reading box
       const koBox = document.getElementById("koReadingBox");
@@ -374,13 +334,13 @@
       const badge = document.getElementById("strengthBadge");
       if (bits >= 80) {
         badge.textContent = "매우 강력";
-        badge.className = "text-base sm:text-lg font-bold text-emerald-400 mt-0.5";
+        badge.className = "text-base sm:text-lg font-bold text-white mt-0.5";
       } else if (bits >= 65) {
         badge.textContent = "강력";
-        badge.className = "text-base sm:text-lg font-bold text-sky-400 mt-0.5";
+        badge.className = "text-base sm:text-lg font-bold text-neutral-200 mt-0.5";
       } else {
         badge.textContent = "보통";
-        badge.className = "text-base sm:text-lg font-bold text-amber-400 mt-0.5";
+        badge.className = "text-base sm:text-lg font-bold text-neutral-400 mt-0.5";
       }
 
       const chipsEl = document.getElementById("wordChips");
@@ -388,7 +348,7 @@
       state.words.forEach((w, idx) => {
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "mono text-xs sm:text-sm px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition flex items-center gap-1.5 cursor-pointer";
+        btn.className = "mono text-xs sm:text-sm px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 transition flex items-center gap-1.5 cursor-pointer";
         btn.title = "클릭하여 이 단어만 다시 뽑기";
         btn.textContent = isKo
           ? (idx + 1) + ". " + w + " (" + hangulToQwerty(w) + ")"
@@ -397,21 +357,7 @@
         chipsEl.appendChild(btn);
       });
 
-      const historyEl = document.getElementById("historyList");
-      historyEl.innerHTML = "";
-      if (state.history.length === 0) {
-        historyEl.textContent = "생성된 기록이 없습니다.";
-      } else {
-        state.history.forEach((item) => {
-          const row = document.createElement("button");
-          row.type = "button";
-          row.className = "w-full text-left mono text-xs px-3 py-2 rounded-lg bg-slate-950/70 hover:bg-slate-800 border border-slate-800 text-slate-300 truncate transition cursor-pointer";
-          row.textContent = item.koLabel ? (item.pw + "  [" + item.koLabel + "]") : item.pw;
-          row.title = "클릭하여 비밀번호 복사";
-          row.addEventListener("click", () => copyText(item.pw));
-          historyEl.appendChild(row);
-        });
-      }
+
     }
 
     document.getElementById("modeKoBtn").addEventListener("click", () => {
@@ -434,21 +380,14 @@
     });
     document.getElementById("separatorSelect").addEventListener("change", (e) => {
       state.separator = e.target.value;
-      updateCurrentHistoryTop();
       render();
     });
     document.getElementById("capitalizeToggle").addEventListener("change", (e) => {
       state.capitalize = e.target.checked;
-      updateCurrentHistoryTop();
       render();
     });
     document.getElementById("suffixToggle").addEventListener("change", (e) => {
       state.addSuffix = e.target.checked;
-      updateCurrentHistoryTop();
-      render();
-    });
-    document.getElementById("clearHistoryBtn").addEventListener("click", () => {
-      state.history = [];
       render();
     });
 
